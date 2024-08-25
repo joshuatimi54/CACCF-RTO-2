@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Computer-Based Test</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  #header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 999;
+  }
+  #timer {
+    font-size: 20px;
+  }
+  #submit {
+    font-size: 16px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  #question-container {
+    margin-top: 60px; /* Adjust for the height of the header */
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  form {
+    margin-top: 50px;
+  }
+  form .data {
+    font-size: large;
+    width: 80%;
+    padding: 5px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+  }
+  form div:nth-child(1)::before {
+    content: "BIBLE KNOWLEDGE";
+    color: red;
+    font-size: 20PX;
+    text-align: center;
+    font-weight: 900 !important;
+  }
+  form div:nth-child(15)::after {
+    content: "ENGLISH LANGUAGE";
+    color: red;
+    font-size: 20PX;
+    text-align: center;
+    font-weight: 900 !important;
+  }
+  form div:nth-child(30)::after {
+    content: "GENRAL KNOWLEDGE";
+    color: red;
+    font-size: 20PX;
+    text-align: center;
+    font-weight: 900 !important;
+  }
+  form div:nth-child(45)::after {
+    content: "MATHEMATICS";
+    color: red;
+    font-size: 20PX;
+    text-align: center;
+    font-weight: 900 !important;
+  }
+  #question {
+    margin-bottom: 10px;
+  }
+  #options {
+    list-style-type: none;
+    padding: 0;
+  }
+  #options li {
+    margin-bottom: 5px;
+  }
+</style>
+</head>
+<body>
+<div id="header">
+  <div id="timer">Time Left: <span id="time-left"></span></div>
+  <button id="submit">Submit</button>
+</div>
+
+<div id="question-container">
+  <form id="test-form">
+    <h3>Student details <span style="color: red;">*</span></h3>
+    <input type="text" class="data" id="first-name" name="first-name" placeholder="First Name" required>
+    <input type="text" class="data" id="last-name" name="last-name" placeholder="Last Name" required>
+    <input type="number" class="data" id="number" name="number" placeholder="WhatsApp Number only (e.g: 8163582799)" required>
+    <input type="text" class="data" id="unit" name="unit" placeholder="Unit" required>
+    <div id="questions">
+    </div>
+  </form>
+</div>
+
+<script>
+const questions = [
+{
+  "question": "How does a man get saved from sin?",
+  "options": ["(a) By Theology", "(b) By Believing in His heart unto righteousness", "(c) By confessing with his mouth unto salvation", "(d) C & D"],
+  "answer": "(d) C & D"
+},
+{
+  "question": "What name of God accords Him as the all-sufficient?",
+  "options": ["(a) El-Shaddai", "(b) Jehovah Jireh", "(c) El Elyon", "(d) Adonai"],
+  "answer": "(a) El-Shaddai"
+},
+{
+  "question": "What do you understand by Holiness? (which option is the best)",
+  "options": ["(a) Intimacy with God", "(b) Spiritual Maturity", "(c) Pure consecrated and sanctified", "(d) Witnessing"],
+  "answer": "(d) Witnessing"
+},
+{
+  "question": "Isaiah had two sons. What are their names?",
+  "options": ["(a) Shear-jashub & Maher-shalal-hash-baz", "(b) Shear-jashub & Mahalath", "(c) Mahalath & Maher-shalal-hash-baz", "(d) Shebuel & Mahalath"],
+  "answer": "(a) Shear-jashub & Maher-shalal-hash-baz"
+},
+{
+  "question": "Who was the husband of Deborah?",
+  "options": ["(a) Lappidoth", "(b) Lamech", "(c) Lilith", "(d) Lo-Ruhamah"],
+  "answer": "(a) Lappidoth"
+},
+{
+  "question": "On which day of creation were the great lights made?",
+  "options": ["(a) 1st", "(b) 2nd", "(c) 3rd", "(d) 4th"],
+  "answer": "(d) 4th"
+},
+{
+  "question": "On which mount did Moses receive the 10 commandments?",
+  "options": ["(a) Sinai", "(b) Nebo", "(c) Moriah", "(d) Ebal"],
+  "answer": "(a) Sinai"
+},
+{
+  "question": "Complete this scriptural verse: \"God came from ______ the Holy One from Mount _______. His glory covered the heavens and his praise filled the earth.\"",
+  "options": ["(a) Teman & Paran", "(b) Teman & Nebo", "(c) Sinai & Perizim", "(d) Zion & Paran"],
+  "answer": "(a) Teman & Paran"
+},
+{
+  "question": "Where can we find \"Bring forth therefore fruits meet for repentance\" in the Bible?",
+  "options": ["(a) Matt. 4:9", "(b) Luke 3:8", "(c) John 2:9", "(d) Matt. 3:8"],
+  "answer": "(d) Matt. 3:8"
+},
+{
+  "question": "Who was the wife of Aquila in the New Testament?",
+  "options": ["(a) Agabus", "(b) Priscilla", "(c) Loius", "(d) Mary"],
+  "answer": "(b) Priscilla"
+},
+{
+  "question": "Who was the grandmother of Timothy?",
+  "options": ["(a) Eunice", "(b) Lois", "(c) Anna", "(d) Elizabeth"],
+  "answer": "(b) Lois"
+},
+{
+  "question": "Mention 3 women who were co-workers with Apostle Paul in his ministry.",
+  "options": ["(a) Phoebe, Euodia, Mary", "(b) Euodia, Junia, Mary", "(c) Priscilla, Phoebe, Euodia", "(d) Tryphena, Julia, Anna"],
+  "answer": "(c) Priscilla, Phoebe, Euodia"
+},
+{
+  "question": "Which town did Elizabeth reside in when she became pregnant?",
+  "options": ["(a) Nazareth", "(b) Judea", "(c) Jerusalem", "(d) Adullam"],
+  "answer": "(b) Judea"
+},
+{
+  "question": "Which Prophet prophesied \"And the LORD said unto me Cast it unto the potter: a goodly price that I was prised at of them. And I took the thirty pieces of silver and cast them to the potter in the house of the LORD\"?",
+  "options": ["(a) Agabus", "(b) Nahum", "(c) Zechariah", "(d) Nathan"],
+  "answer": "(c) Zechariah"
+},
+{
+  "question": "What were the qualities to be found in the first deacons in the early Church? (Those appointed to feed the widows in Acts 6)",
+  "options": ["(a) Men of good report, full of faith, powerful and compassionate", "(b) Full of faith, powerful, caring and good", "(c) Wisdom, full of the Holy Ghost and honest report", "(d) Honest report, men full of the Holy Ghost and wisdom, and compassionate"],
+  "answer": "(c) Wisdom, full of the Holy Ghost and honest report"
+},
+{
+  "question": "Which of the following is a compound sentence?",
+  "options": ["(a) She enjoys reading books.", "(b) She enjoys reading and she also likes writing.", "(c) After she finished her homework she went out to play.", "(d) Reading books is her favorite hobby."],
+  "answer": "(b) She enjoys reading and she also likes writing."
+},
+{
+  "question": "Identify the subject in the following sentence: \"The quick brown fox jumps over the lazy dog.\"",
+  "options": ["(a) The quick brown", "(b) Fox", "(c) Jumps", "(d) Lazy dog"],
+  "answer": "(b) Fox"
+},
+{
+  "question": "Which of the following sentences contains a subordinating conjunction?",
+  "options": ["(a) I wanted to go to the party but I was too tired.", "(b) She studied hard so that she could pass the exam.", "(c) He plays the guitar and sings.", "(d) The cat slept under the table."],
+  "answer": "(b) She studied hard so that she could pass the exam."
+},
+{
+  "question": "In the sentence \"She will call you when she arrives\" what type of clause is \"when she arrives\"?",
+  "options": ["(a) Noun clause", "(b) Adjective clause", "(c) Adverbial clause", "(d) Independent clause"],
+  "answer": "(c) Adverbial clause"
+},
+{
+  "question": "What is the function of the word \"quickly\" in the sentence \"She quickly finished her homework\"?",
+  "options": ["(a) Noun", "(b) Verb", "(c) Adjective", "(d) Adverb"],
+  "answer": "(d) Adverb"
+},
+{
+  "question": "Which sentence is an example of the passive voice?",
+  "options": ["(a) The chef cooked the meal.", "(b) The meal was cooked by the chef.", "(c) The chef is cooking the meal.", "(d) The chef will cook the meal."],
+  "answer": "(b) The meal was cooked by the chef."
+},
+{
+  "question": "Choose the correct word order for this question: \"Where ___ they ___?\"",
+  "options": ["(a) do go", "(b) are going", "(c) did gone", "(d) have went"],
+  "answer": "(b) are going"
+},
+{
+  "question": "In the sentence \"She is taller than her brother\" what type of word is \"than\"?",
+  "options": ["(a) Preposition", "(b) Conjunction", "(c) Adjective", "(d) Adverb"],
+  "answer": "(b) Conjunction"
+},
+{
+  "question": "Which of the following sentences has a correct parallel structure?",
+  "options": ["(a) She likes swimming to jog and biking.", "(b) She likes to swim jogging and biking.", "(c) She likes swimming jogging and biking.", "(d) She likes to swim to jog and bike."],
+  "answer": "(c) She likes swimming jogging and biking."
+},
+{
+  "question": "What is the direct object in the sentence: \"The teacher gave the students homework\"?",
+  "options": ["(a) Teacher", "(b) Students", "(c) Gave", "(d) Homework"],
+  "answer": "(d) Homework"
+},
+{
+  "question": "What is the term for a word or phrase that means the opposite of its literal meaning?",
+  "options": ["(a) Irony", "(b) Paradox", "(c) Sarcasm", "(d) Oxymoron"],
+  "answer": "(d) Oxymoron"
+},
+{
+  "question": "What is the term for a word that has the same meaning as another word?",
+  "options": ["(a) Homonym", "(b) Synonym", "(c) Antonym", "(d) Metaphor"],
+  "answer": "(b) Synonym"
+},
+{
+  "question": "Identify the noun in this sentence “I LIVE IN AKURE”",
+  "options": ["(a) I", "(b) Akure", "(c) Live", "(d) In"],
+  "answer": "(b) Akure"
+},
+{
+  "question": "Identify the pronoun in this sentence \"WOULD YOU LIKE TO HAVE COFFEE\"",
+  "options": ["(a) Would", "(b) You", "(c) Coffee", "(d) Like"],
+  "answer": "(b) You"
+},
+{
+  "question": "Choose the option that best conveys the meaning of the underlined portion in the following sentence; \"From the ways my friend talks you can see he is such a bore\"",
+  "options": ["(a) Rude", "(b) Brilliant", "(c) Uninterested", "(d) Happy"],
+  "answer": "(c) Uninterested"
+},
+{
+  "question": "What are the three most common languages spoken in Nigeria?",
+  "options": ["(a) English, German, French", "(b) Hausa, Yoruba, Igbo", "(c) Hindu, English, Hausa", "(d) Yoruba, Arabic, Hindu"],
+  "answer": "(b) Hausa, Yoruba, Igbo"
+},
+{
+  "question": "Which country is the only one to border both the Atlantic and Indian Oceans?",
+  "options": ["(a) South Africa", "(b) Australia", "(c) Brazil", "(d) Madagascar"],
+  "answer": "(a) South Africa"
+},
+{
+  "question": "In which continent is the Sahara Desert located?",
+  "options": ["(a) Asia", "(b) Africa", "(c) Australia", "(d) South America"],
+  "answer": "(b) Africa"
+},
+{
+  "question": "Which ocean is the largest by surface area?",
+  "options": ["(a) Atlantic Ocean", "(b) Indian Ocean", "(c) Arctic Ocean", "(d) Pacific Ocean"],
+  "answer": "(d) Pacific Ocean"
+},
+{
+  "question": "Which mountain is the highest in the world?",
+  "options": ["(a) K2", "(b) Mount Kilimanjaro", "(c) Mount Everest", "(d) Denali"],
+  "answer": "(c) Mount Everest"
+},
+{
+  "question": "What is the medical term for high blood pressure?",
+  "options": ["(a) Hypotension", "(b) Hypertension", "(c) Hyperglycemia", "(d) Tachycardia"],
+  "answer": "(b) Hypertension"
+},
+{
+  "question": "What is the largest organ in the human body?",
+  "options": ["(a) Liver", "(b) Heart", "(c) Skin", "(d) Lungs"],
+  "answer": "(c) Skin"
+},
+{
+  "question": "Nigeria achieved independence in 1960 from which European country?",
+  "options": ["(a) Belgium", "(b) France", "(c) United Kingdom", "(d) Cameroon"],
+  "answer": "(c) United Kingdom"
+},
+{
+  "question": "What is the capital of Abia state?",
+  "options": ["(a) Akure", "(b) Umuahia", "(c) Sokoto", "(d) Yola"],
+  "answer": "(b) Umuahia"
+},
+{
+  "question": "What is the highest female singing voice?",
+  "options": ["(a) Alto", "(b) Mezzo-soprano", "(c) Soprano", "(d) Contralto"],
+  "answer": "(c) Soprano"
+},
+{
+  "question": "The national anthem of Nigeria has been \"Arise O Compatriots\" since 1978. What was the previous national anthem?",
+  "options": ["(a) I pledge to Nigeria", "(b) Oh God of creation", "(c) Nigeria we hail thee", "(d) Good morning Jesus"],
+  "answer": "(c) Nigeria we hail thee"
+},
+{
+  "question": "Nigeria is divided into 36 states. Which one is the largest by area?",
+  "options": ["(a) Niger state", "(b) Adamawa state", "(c) Zamfara state", "(d) Kwara state"],
+  "answer": "(a) Niger state"
+},
+{
+  "question": "Nigeria adopted what currency in 1973? And Nigeria still uses this currency.",
+  "options": ["(a) Dollar", "(b) Naira", "(c) Pounds", "(d) Coin"],
+  "answer": "(b) Naira"
+},
+{
+  "question": "Whose face is on the 20 Naira Note?",
+  "options": ["(a) Muritala Mohammed", "(b) Bola Ahmed Tinubu", "(c) Nnamdi Azikiwe", "(d) Sir Ahmadu Bello"],
+  "answer": "(a) Muritala Mohammed"
+},
+{
+  "question": "Nigeria's flag consists of how many colours? What are they?",
+  "options": ["(a) 3 (Green white Green)", "(b) 2 (Green and white)", "(c) No colour", "(d) 4 (Green white Green White)"],
+  "answer": "(b) 2 (Green and white)"
+},
+{
+  "question": "Evaluate -1-(-1)¹-(-1)²-(-1)³.........-(-1)⁹⁹-(-1)¹⁰⁰",
+  "options": ["(a) 1", "(b) 0", "(c) -1", "(d) 2"],
+  "answer": "(b) 0"
+},
+{
+  "question": "If a+b=3 a²b+ab²=-30 then find the value of a²-ab+b²",
+  "options": ["(a) 6", "(b) 3", "(c) 30", "(d) 39"],
+  "answer": "(d) 39"
+},
+{
+  "question": "If m=10x³-6x²+5x-4 n=2+9x³+4x-2x² then the values of 19x³-8x²+9x-2 is?",
+  "options": ["(a) m+2n", "(b) m-n", "(c) 3m-2n", "(d) m+n"],
+  "answer": "(d) m+n"
+},
+{
+  "question": "Let (ax³-x+6)(3x²+5x+b)= 6x²+10x⁴-7x³+13x²+32x+22. Find the value of ab",
+  "options": ["(a) 6-2", "(b) -62", "(c) 62", "(d) -6-2"],
+  "answer": "(a) 6-2"
+},
+{
+  "question": "From which of the following statements must it follow that x>y?",
+  "options": ["(a) x=2y", "(b) 2x=y", "(c) x+2=y", "(d) x-2=y"],
+  "answer": "(d) x-2=y"
+},
+{
+  "question": "If F(g(x))= x and F(x)= 3x+1 which of the following is g(x)?",
+  "options": ["(a) ⅓x -⅑", "(b) ⅓x-⅓", "(c) ⅓x + 1", "(d) 3x-1"],
+  "answer": "(b) ⅓x-⅓"
+},
+{
+  "question": "If x+y=5 and x-y=3 then x²-y²= ?",
+  "options": ["(a) 9", "(b) 15", "(c) 16", "(d) 25"],
+  "answer": "(b) 15"
+},
+{
+  "question": "The length of a rectangle is four times its width if the perimeter of the rectangle is 40cm. What is the area?",
+  "options": ["(a) 4cm²", "(b) 16cm²", "(c) 20cm²", "(d) 64cm²"],
+  "answer": "(d) 64cm²"
+},
+{
+  "question": "Which of the following is an equation of a line that is parallel to the line with the equation 2x-y=7?",
+  "options": ["(a) y=-2x-7", "(b) y= 2x+7", "(c) y=½x-7", "(d) y=2x+7"],
+  "answer": "(d) y=2x+7"
+},
+{
+  "question": "Let ab²=6 Find the value of ab(ab³+a²b⁵-b)",
+  "options": ["(a) 246", "(b) 264", "(c) 426", "(d) 462"],
+  "answer": "(a) 246"
+},
+{
+  "question": "If ab=1 Find the value of a^a+1 + b^b+1",
+  "options": ["(a) 1", "(b) 0", "(c) ½", "(d) 2"],
+  "answer": "(a) 1"
+},
+{
+  "question": "Solve 1- (x-(1+x)/3/3) =x/2 - (2x-(10-7x)/3/2)",
+  "options": ["(a) 135", "(b) 517", "(c) 65", "(d) 56"],
+  "answer": "(b) 517"
+},
+{
+  "question": "For which of the following equations is it true that the sum of the roots equals the product of the roots?",
+  "options": ["(a) x²-4=0", "(b) x²-2x+1=0", "(c) x²-4x+4=0", "(d) x²-3x+6=0"],
+  "answer": "(c) x²-4x+4=0"
+},
+{
+  "question": "In the xy-plane the point (6, 3) is the midpoint of the line segment with end points (x, 5) and (9, y). What is the value of x+y?",
+  "options": ["(a) 4", "(b) 9", "(c) 14", "(d) 18"],
+  "answer": "(b) 9"
+},
+{
+  "question": "Solve 1917 + 15x + 23 + 4 + 6 + 8 = 1",
+  "options": ["(a) 1", "(b) 0", "(c) 3", "(d) 5"],
+  "answer": "(a) 1"
+}
+];
+
+let countdownTimer;
+let timeLeft = 45 * 60; // 50 minutes in seconds
+
+function displayQuestions() {
+  const questionsElem = document.getElementById('questions');
+  
+  questions.forEach((question, index) => {
+    const questionElem = document.createElement('div');
+    questionElem.innerHTML = `<h3>${index + 1}. ${question.question}</h3>`;
+    
+    const optionsElem = document.createElement('ul');
+    question.options.forEach((option, optionIndex) => {
+      const li = document.createElement('li');
+      const radio = document.createElement('input');
+      radio.type = 'radio';
+      radio.name = `option-${index}`;
+      radio.value = option;
+      li.appendChild(radio);
+      
+      const label = document.createElement('label');
+      label.textContent = option;
+      li.appendChild(label);
+      
+      optionsElem.appendChild(li);
+    });
+    
+    questionElem.appendChild(optionsElem);
+    questionsElem.appendChild(questionElem);
+  });
+}
+
+function updateTimer() {
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
+  document.getElementById('time-left').textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+}
+
+function startTimer() {
+  updateTimer();
+  countdownTimer = setInterval(() => {
+    if (timeLeft <= 0) {
+      clearInterval(countdownTimer);
+      submitTest();
+    } else {
+      timeLeft--;
+      updateTimer();
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(countdownTimer);
+  timeLeft = 50 * 60;
+  updateTimer();
+}
+
+function submitTest() {
+  const formData = new FormData(document.getElementById('test-form'));
+  const responses = {};
+  const firstName = formData.get('first-name');
+  const lastName = formData.get('last-name');
+  const number = formData.get('number');
+  const unit = formData.get('unit');
+
+  // Add first name, last name, and email to the responses
+  responses.firstName = firstName;
+  responses.lastName = lastName;
+  responses.number = number;
+  responses.unit = unit;
+
+  questions.forEach((question, index) => {
+    const selectedOption = formData.get(`option-${index}`);
+    if (selectedOption) {
+      responses[`question-${index + 1}`] = {
+        question: question.question,
+        answer: selectedOption
+      };
+    }
+  });
+
+  // Display a popup message
+  const message = 'Test responses submitted successfully!';
+  alert(message);
+
+  // Here, you would send the responses as a single JSON object to the webhook
+  const webhookUrl = 'https://hook.eu2.make.com/iokxsc3tkpwfowa3gakd9xsg532w85p7';
+  fetch(webhookUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(responses)
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Failed to send test responses');
+    }
+    console.log('Test responses sent successfully');
+    window.location.href = '/thank-you.html'; // Redirect to thank-you page
+  })
+  .catch(error => {
+    console.error('Error sending test responses:', error.message);
+    // Handle error if necessary
+  });
+
+  // Refresh the page after 3 seconds
+  setTimeout(() => {
+    location.reload();
+  }, 3000);
+}
+
+
+document.getElementById('submit').addEventListener('click', () => {
+  submitTest();
+});
+
+displayQuestions();
+startTimer();
+</script>
+</body>
+</html>
